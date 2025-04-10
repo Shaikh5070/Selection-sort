@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection Sort Simulation</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #E0FFFF;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+}
+
+.array-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.array-element {
+    width: 50px;
+    height: 50px;
+    background-color: #4682B4; /* Default blue color */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 18px;
+    margin: 0 5px;
+    transition: background-color 1s ease;
+}
+
+.sorted {
+    background-color: aqua;
+    
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color:#B22222 ;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Selection Sort Simulation</h2>
+        <div id="arrayContainer" class="array-container"></div>
+        <button id="startSortBtn">Start Selection Sort</button>
+    </div>
+
+    
+    <script>
+        const arrayContainer = document.getElementById('arrayContainer');
+const startSortBtn = document.getElementById('startSortBtn');
+
+// Function to display the array as blocks on the screen
+function displayArray(arr) {
+    arrayContainer.innerHTML = ''; // Clear previous content
+    arr.forEach((element, index) => {
+        const arrayElement = document.createElement('div');
+        arrayElement.classList.add('array-element');
+        arrayElement.setAttribute('id', `element-${index}`);
+        arrayElement.textContent = element;
+        arrayContainer.appendChild(arrayElement);
+    });
+}
+
+// Function to perform selection sort
+async function selectionSort(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        let minIndex = i;
+
+        for (let j = i; j < arr.length; j++) {
+            // Highlight the current element being compared
+            if(j==i) {
+                document.getElementById(`element-${j}`).style.backgroundColor = 'red';
+            }
+            else{
+                document.getElementById(`element-${j}`).style.backgroundColor = 'yellow';
+            }
+            
+            // Highlight the current minimum index
+            if (arr[j] < arr[minIndex]) {
+                // Reset previous minimum index color
+                document.getElementById(`element-${minIndex}`).style.backgroundColor = 'peru';
+                
+                // Highlight the new minimum index
+                document.getElementById(`element-${j}`).style.backgroundColor = 'red';
+                minIndex = j;
+            }
+            
+            // Delay for visualization
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        // Swap elements if a new minimum was found
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+            displayArray(arr);
+        }
+        
+        // Mark the current sorted position as green
+        document.getElementById(`element-${i}`).style.backgroundColor = 'Turquoise';
+        for (let k = i+1; k < arr.length; k++) {
+        document.getElementById(`element-${k}`).style.backgroundColor = '';
+        }
+        for (let k = 0; k < i; k++) {
+            document.getElementById(`element-${k}`).style.backgroundColor = 'Turquoise';
+            }
+    }
+
+    // Ensure the last element is marked as green
+    document.getElementById(`element-${arr.length - 1}`).style.backgroundColor = 'Turquoise';
+}
+
+// Retrieve the elements from localStorage
+const storedElements = localStorage.getItem('elements');
+const elements = storedElements ? JSON.parse(storedElements) : [];
+
+// Initial display of the array
+if (elements.length > 0) {
+    displayArray(elements);
+}
+
+// Event listener for the start sort button
+startSortBtn.addEventListener('click', function () {
+    selectionSort([...elements]); // Call the sorting function with a copy of the elements
+});
+
+    </script>
+</body>
+</html>
