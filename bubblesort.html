@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: aqua;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .array-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .array-element {
+            width: 50px;
+            height: 50px;
+            background-color: #4682B4; /* Default: steel blue */
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            font-size: 18px;
+            margin: 0 5px;
+            transition: background-color 0.5s ease;
+        }
+
+        .sorted {
+            background-color: green;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #B22222;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Bubble Sort Simulation</h2>
+        <div id="arrayContainer" class="array-container"></div>
+        <button id="startSortBtn">Start Bubble Sort</button>
+    </div>
+
+    <script>
+        const arrayContainer = document.getElementById('arrayContainer');
+        const startSortBtn = document.getElementById('startSortBtn');
+
+        function displayArray(arr) {
+            arrayContainer.innerHTML = '';
+            arr.forEach((element, index) => {
+                const arrayElement = document.createElement('div');
+                arrayElement.classList.add('array-element');
+                arrayElement.setAttribute('id', `element-${index}`);
+                arrayElement.textContent = element;
+                arrayContainer.appendChild(arrayElement);
+            });
+        }
+
+        async function bubbleSort(arr) {
+            let n = arr.length;
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    const elem1 = document.getElementById(`element-${j}`);
+                    const elem2 = document.getElementById(`element-${j + 1}`);
+
+                    elem1.style.backgroundColor = 'yellow';
+                    elem2.style.backgroundColor = 'orange';
+
+                    await new Promise(resolve => setTimeout(resolve, 800));
+
+                    if (arr[j] > arr[j + 1]) {
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                        displayArray(arr);
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+
+                    // Reset to default color
+                    document.getElementById(`element-${j}`).style.backgroundColor = '#4682B4';
+                    document.getElementById(`element-${j + 1}`).style.backgroundColor = '#4682B4';
+                }
+
+                // Mark the sorted element
+                document.getElementById(`element-${n - i - 1}`).style.backgroundColor = 'green';
+            }
+
+            // Mark the first element as sorted at the end
+            document.getElementById('element-0').style.backgroundColor = 'green';
+        }
+
+        const storedElements = localStorage.getItem('elements');
+        const elements = storedElements ? JSON.parse(storedElements) : [];
+
+        if (elements.length > 0) {
+            displayArray(elements);
+        }
+
+        startSortBtn.addEventListener('click', function () {
+            bubbleSort([...elements]);
+        });
+    </script>
+</body>
+  </html>
